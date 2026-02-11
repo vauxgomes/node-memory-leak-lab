@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./packages/backend/Dockerfile
+    ports:
+      - "3000:3000"
+      - "9229:9229" # Debugger/Inspector
+    deploy:
+      resources:
+        limits:
+          memory: 256M # Forcing memory crash
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./packages/backend:/app/packages/backend
+      - /app/node_modules
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./packages/frontend/Dockerfile
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000
