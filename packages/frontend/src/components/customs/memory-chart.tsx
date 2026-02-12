@@ -21,17 +21,25 @@ const chartConfig = {
 
 interface MemoryChartProps {
   data: IMemoryStats[]
+  onRefresh?: () => void
 }
 
-export function MemoryChart({ data }: MemoryChartProps) {
+export function MemoryChart({ data, onRefresh }: MemoryChartProps) {
   return (
     <Card className="w-full">
       <CardHeader>
         <CardTitle>Memory Usage</CardTitle>
         <CardDescription>Memory usage over time</CardDescription>
-        <Button variant="outline" size="icon" className="h-8 w-8">
-          <RefreshCcw className="h-4 w-4" />
-        </Button>
+        {onRefresh && (
+          <Button
+            variant="outline"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onRefresh}
+          >
+            <RefreshCcw className="h-4 w-4" />
+          </Button>
+        )}
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="w-full">
