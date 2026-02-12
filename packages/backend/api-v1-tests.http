@@ -1,0 +1,17 @@
+### Environment Variables
+@baseUrl = http://localhost:3000/api/v1
+
+### 1. Get Memory Statistics (Heartbeat)
+# Use this endpoint to monitor the current Heap and RSS state
+GET {{baseUrl}}/stats
+Content-Type: application/json
+
+### 2. Trigger Leak: Global Cache
+# Execute this multiple times to simulate memory accumulation in the global scope
+POST {{baseUrl}}/leak/global-cache
+Content-Type: application/json
+
+### 3. Clear Memory (Reset)
+# This endpoint clears the global cache, allowing the Garbage Collector to reclaim space
+POST {{baseUrl}}/leak/clear
+Content-Type: application/json
