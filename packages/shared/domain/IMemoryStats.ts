@@ -1,16 +1,16 @@
 export interface IMemoryStats {
   // Resident Set Size: Total used memory
-  rss: number;
+  rss: number
 
   // Heap Total: Total reserved memory (V8 memory)
-  heapTotal: number;
+  heapTotal: number
 
   // Heap Used
-  heapUsed: number;
+  heapUsed: number
 
   // External: Used for streams/fs
-  external: number;
+  external: number
 
   // Timestamp
-  timestamp: number;
+  timestamp: number
 }

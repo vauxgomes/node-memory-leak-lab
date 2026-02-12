@@ -1,2 +1,2 @@
-export { ILeakEvent } from "./domain/ILeakEvent";
-export { IMemoryStats } from "./domain/IMemoryStats";
+export type { ILeakEvent } from './domain/ILeakEvent.js'
+export type { IMemoryStats } from './domain/IMemoryStats.js'
