@@ -1,7 +1,7 @@
-import { GlobalCache } from '../experiments/GlobalCache.js'
+import { GlobalCacheManager } from 'src/domain/leaks/GlobalCacheManager.js'
 
 export class LeakService {
-  private globalCache = GlobalCache.getInstance()
+  private globalCache = GlobalCacheManager.getInstance()
 
   public runGlobalCacheExperiment() {
     return this.globalCache.addData()

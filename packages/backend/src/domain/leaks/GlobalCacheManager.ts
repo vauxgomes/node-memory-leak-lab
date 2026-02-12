@@ -7,19 +7,19 @@ import type { ILeakEvent } from '@shared/types'
  * - The garbage collector is unable to destroy the object.
  * - We would have to explicitly cleared it.
  */
-export class GlobalCache {
-  private static instance: GlobalCache
+export class GlobalCacheManager {
+  private static instance: GlobalCacheManager
   private cache = new Map<string, any>()
 
   private constructor() {}
 
   // Singleton
-  public static getInstance(): GlobalCache {
-    if (!GlobalCache.instance) {
-      GlobalCache.instance = new GlobalCache()
+  public static getInstance(): GlobalCacheManager {
+    if (!GlobalCacheManager.instance) {
+      GlobalCacheManager.instance = new GlobalCacheManager()
     }
 
-    return GlobalCache.instance
+    return GlobalCacheManager.instance
   }
 
   public addData(): ILeakEvent {
