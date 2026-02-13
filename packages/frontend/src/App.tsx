@@ -1,5 +1,5 @@
 import type { IMemoryStats } from '@shared/domain/IMemoryStats'
-import { Trash, Zap } from 'lucide-react'
+import { Box, Info, MousePointerClick, Trash, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { MemoryChart } from './components/customs/MemoryChart'
@@ -12,12 +12,18 @@ import {
   CardTitle
 } from './components/ui/card'
 import { Toaster } from './components/ui/sonner'
+import { Badge } from './components/ui/badge'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
 const API_DATA_POINTS = 50
 
 function App() {
   const [stats, setStats] = useState<IMemoryStats[]>([])
+  const [clickCounts, setClickCounts] = useState({
+    global: 0,
+    events: 0,
+    closures: 0
+  })
 
   const onFetchStats = async () => {
     try {
@@ -25,16 +31,16 @@ function App() {
       const data = await response.json()
 
       setStats((prev) => [...prev.slice(-API_DATA_POINTS + 1), data]) // Appending data
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error('Failed to fetch memory stats')
+      console.error('Failed to fetch memory stats', error)
     }
   }
 
   const onGlobalCashLeak = async () => {
     try {
       await fetch(`${API_URL}/leak/global-cache`, { method: 'POST' })
-      // toast.success('Global leak triggered')
+      incrementCount('global') // Increment global count on every fetch
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error('Failed to trigger global leak')
@@ -44,11 +50,47 @@ function App() {
   const onGlobalCacheClear = async () => {
     try {
       await fetch(`${API_URL}/leak/clear`, { method: 'POST' })
+      setClickCounts({ global: 0, events: 0, closures: 0 }) // Reset counts
       toast.success('Global cache cleared')
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error('Failed to trigger global leak')
     }
+  }
+
+  const onEventListenersLeak = async () => {
+    try {
+      await fetch(`${API_URL}/leak/events`, { method: 'POST' })
+      incrementCount('events') // Increment events count on every fetch
+
+      // Friendly warning
+      // toast.warning('Event Listeners leak triggered', {
+      //   description: 'Adding 10,000 dangling click listeners to process.'
+      // })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error('Failed to trigger event leak')
+    }
+  }
+
+  const onClosuresLeak = async () => {
+    try {
+      await fetch(`${API_URL}/leak/closures`, { method: 'POST' })
+      incrementCount('closures') // Increment closures count on every fetch
+
+      // Friendly warning
+      // toast.warning('Closures leak triggered', {
+      //   description: 'Allocating large strings inside retained closures.'
+      // })
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      toast.error('Failed to trigger closures leak')
+    }
+  }
+
+  // Helper
+  const incrementCount = (type: keyof typeof clickCounts) => {
+    setClickCounts((prev) => ({ ...prev, [type]: prev[type] + 1 }))
   }
 
   // Auto refresh stats every second
@@ -83,22 +125,62 @@ function App() {
           <CardContent className="grow grid grid-cols-2 gap-2 md:grid-cols-1 md:content-start">
             <Button
               variant="outline"
-              className="cursor-pointer w-full"
+              className="cursor-pointer justify-between gap-4 w-full"
               onClick={onGlobalCashLeak}
             >
-              <Zap className="h-4 w-4" /> Global Leak
+              <div className="flex gap-2 items-center">
+                <Zap className="h-4 w-4" />
+                Global Leak
+              </div>
+
+              <Badge variant="default">{clickCounts.global}</Badge>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="cursor-pointer justify-between gap-4 w-full"
+              onClick={onEventListenersLeak}
+            >
+              <div className="flex gap-2 items-center">
+                <MousePointerClick className="h-4 w-4" />
+                Event Listeners Leak
+              </div>
+
+              <Badge variant="default">{clickCounts.events}</Badge>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="cursor-pointer justify-between gap-4 w-full"
+              onClick={onClosuresLeak}
+            >
+              <div className="flex gap-2 items-center">
+                <Box className="h-4 w-4" />
+                Closures Leak
+              </div>
+
+              <Badge variant="default">{clickCounts.closures}</Badge>
             </Button>
           </CardContent>
 
-          <CardFooter className="flex flex-col gap-2 *:cursor-pointer *:w-full">
-            <Button variant="secondary" onClick={onGlobalCacheClear}>
-              <Trash className="h-4 w-4" /> Clear Data
+          <CardFooter className="mt-auto border-t flex flex-col gap-3">
+            <Button
+              variant="secondary"
+              className="justify-between gap-4 cursor-pointer w-full"
+              onClick={onGlobalCacheClear}
+            >
+              Clear Data
+              <Trash className="h-4 w-4" />
             </Button>
+
+            <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+              <Info size={12} /> Clearing helps the GC reclaim memory.
+            </p>
           </CardFooter>
         </Card>
       </div>
 
-      <Toaster />
+      <Toaster richColors position="bottom-right" />
     </div>
   )
 }
