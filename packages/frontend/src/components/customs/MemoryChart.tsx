@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
 import { RefreshCcw } from 'lucide-react'
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts'
 
 import { Button } from '../ui/button'
 
@@ -64,6 +64,15 @@ export function MemoryChart({ data, onRefresh }: MemoryChartProps) {
                 })
               }
             />
+
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              width={60}
+              tickFormatter={(value) => `${value}MB`}
+            />
+            
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}

@@ -2,7 +2,7 @@ import type { IMemoryStats } from '@shared/domain/IMemoryStats'
 import { Trash, Zap } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { MemoryChart } from './components/customs/memory-chart'
+import { MemoryChart } from './components/customs/MemoryChart'
 import { Button } from './components/ui/button'
 import {
   Card,
@@ -67,7 +67,7 @@ function App() {
           </p>
         </div>
 
-        <ShowConnectionStatus isConnected={true} />
+        <ShowConnectionStatus />
       </header>
 
       <div className="flex flex-col gap-4 md:flex-row">
@@ -103,7 +103,8 @@ function App() {
   )
 }
 
-function ShowConnectionStatus({ isConnected }: { isConnected: boolean }) {
+// Totally fake connection status component, just for fun
+function ShowConnectionStatus() {
   return (
     <div className="flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
       <span className="relative flex h-2 w-2">
