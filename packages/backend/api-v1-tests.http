@@ -6,12 +6,33 @@
 GET {{baseUrl}}/stats
 Content-Type: application/json
 
+###
+
 ### 2. Trigger Leak: Global Cache
-# Execute this multiple times to simulate memory accumulation in the global scope
+# Adds large objects to a static Map. 
+# Observation: Linear increase in Heap Used.
 POST {{baseUrl}}/leak/global-cache
 Content-Type: application/json
 
-### 3. Clear Memory (Reset)
-# This endpoint clears the global cache, allowing the Garbage Collector to reclaim space
+###
+
+### 3. Trigger Leak: Event Listeners
+# Adds 10,000 dangling click listeners to the process.
+# Observation: Increases both Heap and RSS due to Node's internal event management.
+POST {{baseUrl}}/leak/events
+Content-Type: application/json
+
+###
+
+### 4. Trigger Leak: Closures
+# Allocates large strings within retained function scopes.
+# Observation: Significant "stairs" on the graph that are hard for the GC to reclaim.
+POST {{baseUrl}}/leak/closures
+Content-Type: application/json
+
+###
+
+### 5. Clear All Leaks (Reset)
+# Clears all managers and allows the Garbage Collector to reclaim space.
 POST {{baseUrl}}/leak/clear
 Content-Type: application/json
