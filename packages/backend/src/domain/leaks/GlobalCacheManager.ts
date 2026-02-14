@@ -25,7 +25,7 @@ export class GlobalCacheManager {
   public addData(): ILeakEvent {
     const id = Date.now().toString()
     const heavyObject = {
-      data: new Array(10000).fill('A way large object'), // NOTE: About ~0.04 MB accondingly with Gemini
+      data: new Array(500_000).fill('A way large object'), // NOTE: About 4 MB accondingly with Gemini
       timestamp: new Date().toISOString()
     }
 
