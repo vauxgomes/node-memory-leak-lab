@@ -1,13 +1,27 @@
+import type { ClosureManager } from 'src/domain/leaks/ClosureManager.js'
+import type { EventListenerManager } from 'src/domain/leaks/EventListenerManager.js'
 import { GlobalCacheManager } from 'src/domain/leaks/GlobalCacheManager.js'
 
 export class LeakService {
-  private globalCache = GlobalCacheManager.getInstance()
+  constructor(
+    private globalCache: GlobalCacheManager,
+    private eventListenerManager: EventListenerManager,
+    private closureManager: ClosureManager
+  ) {}
 
-  public runGlobalCacheExperiment() {
-    return this.globalCache.addData()
+  public executeGlobalCacheExperiment() {
+    return this.globalCache.addEntries()
+  }
+  public executeClosureExperiment() {
+    return this.closureManager.addClosures()
+  }
+  public executeEventListenerExperiment() {
+    return this.eventListenerManager.addEventListeners()
   }
 
-  public resetAll() {
+  public clearAll() {
     this.globalCache.clear()
+    this.closureManager.clear()
+    this.eventListenerManager.clear()
   }
 }

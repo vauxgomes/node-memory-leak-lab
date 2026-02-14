@@ -2,7 +2,7 @@ import type { ILeakEvent } from '@shared/types'
 
 /**
  * This class is for simulating a memory leak by storing data in a global static cache.
- * 
+ *
  * **Note**:
  * - The garbage collector is unable to destroy the object.
  * - We would have to explicitly cleared it.
@@ -11,21 +11,12 @@ export class GlobalCacheManager {
   private static instance: GlobalCacheManager
   private cache = new Map<string, any>()
 
-  private constructor() {}
+  public addEntries(): ILeakEvent {
+    const NUM_ENTRIES = 500_000
 
-  // Singleton
-  public static getInstance(): GlobalCacheManager {
-    if (!GlobalCacheManager.instance) {
-      GlobalCacheManager.instance = new GlobalCacheManager()
-    }
-
-    return GlobalCacheManager.instance
-  }
-
-  public addData(): ILeakEvent {
     const id = Date.now().toString()
     const heavyObject = {
-      data: new Array(500_000).fill('A way large object'), // NOTE: About 4 MB accondingly with Gemini
+      data: new Array(NUM_ENTRIES).fill('A way large object'), // NOTE: About 4 MB accondingly with Gemini
       timestamp: new Date().toISOString()
     }
 
@@ -34,7 +25,7 @@ export class GlobalCacheManager {
 
     return {
       type: 'GLOBAL_CACHE',
-      message: `Added items to global cache.`,
+      message: `Added ${NUM_ENTRIES} items to global cache.`,
       activeItems: this.cache.size
     }
   }

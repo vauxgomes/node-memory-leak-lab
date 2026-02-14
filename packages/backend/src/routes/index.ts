@@ -12,8 +12,10 @@ export function setupRoutes(
   router.get('/stats', memoryController.getStats)
 
   // Leak Experiments
-  router.post('/leak/global-cache', leakController.triggerGlobalCache)
-  router.post('/leak/clear', leakController.clear)
+  router.post('/leak/global-cache', leakController.triggerGlobalCacheLeak)
+  router.post('/leak/events', leakController.triggerEventListenersLeak)
+  router.post('/leak/closures', leakController.triggerClosuresLeak)
+  router.post('/leak/clear', leakController.clearAll)
 
   return router
 }
